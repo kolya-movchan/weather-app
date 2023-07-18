@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Roboto';
+  background: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
+}
+
+.container {
+  padding: 30px;
+  margin: 0 auto;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.469);
+  background-blend-mode: multiply;
+  backdrop-filter: blur(12px);
+  border: 2px solid #b2acac2e;
+  border-radius: 25px;
+}

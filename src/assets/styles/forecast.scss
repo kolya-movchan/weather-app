@@ -1,0 +1,13 @@
+.forecast {
+  // margin-bottom: 20px;
+  height: 200px;
+  padding: 20px;
+  border-radius: 25px;
+  border: 1px solid #b2acac2e;
+
+
+  &__period {
+    display: flex;
+    gap: 10px;
+  }
+}
