@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
 body {
   min-height: 100vh;
@@ -17,7 +17,7 @@ body {
   flex-direction: column;
   gap: 20px;
 
-  padding: 30px;
+  padding: 50px 30px 30px;
   background: rgba(255, 255, 255, 0.469);
   background-blend-mode: multiply;
   backdrop-filter: blur(12px);

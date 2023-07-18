@@ -1,15 +1,15 @@
 <template>
   <div class="navigation">
-    <a href="/" class="navigation__link">
+    <RouterLink :to="{ name: 'home' }" class="navigation__link">
       Home
-    </a>
+    </RouterLink>
 
-    <a href="/" class="navigation__link">
+    <RouterLink :to="{ name: 'home' }" class="navigation__link">
       Favorites
-    </a>
+    </RouterLink>
   </div>
 </template>
 
 <script setup>
-
+  import { RouterLink } from 'vue-router'
 </script>

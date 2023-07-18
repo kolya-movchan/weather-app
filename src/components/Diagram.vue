@@ -1,9 +1,7 @@
-<template>
-  <div class="diagram">
-
-  </div>
+<!-- <template>
+ 
 </template>
 
 <script setup>
 
-</script>
+</script> -->

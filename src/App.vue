@@ -7,12 +7,9 @@
 
       <main class="main">
         <City />
-        <Forecast />
-        <Diagram />
+        <CityView />
       </main>
     </div>
-
-    <RouterView />
   </div>
 </template>
 
@@ -22,6 +19,7 @@
   import Logo from "./components/Logo.vue";
   import Navigation from "./components/Navigation.vue";
   import City from "./components/City.vue";
-  import Forecast from "./components/ForeCast.vue";
-  import Diagram from "./components/Diagram.vue";
+  import CityView from "./views/CityView.vue";
+  // import Forecast from "./components/ForeCast.vue";
+  // import Diagram from "./components/Diagram.vue";
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <a href="/" class="logo-container">
+  <RouterLink :to="{ name: 'home' }" class="logo-container">
     <div class="logo">
       <img
         src="../assets/pictures/logo.avif"
@@ -9,9 +9,9 @@
 
       SkyVue
     </div>
-  </a>
+  </RouterLink>
 </template>
 
 <script setup>
-
+  import { RouterLink } from 'vue-router'
 </script>
