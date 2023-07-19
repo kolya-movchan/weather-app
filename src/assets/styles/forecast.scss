@@ -1,12 +1,20 @@
 .forecast {
-  // margin-bottom: 20px;
-  height: 200px;
+  display: flex;
+  justify-content: space-between;
   padding: 20px;
+  min-height: 150px;
   border-radius: 25px;
   border: 1px solid #b2acac2e;
+  background-color: #ADD8FF;
+  overflow-x: auto;
 
+  &__container {
+    display: flex;
+    align-items: center;
+  }
 
   &__period {
+    position: fixed;
     display: flex;
     gap: 10px;
   }

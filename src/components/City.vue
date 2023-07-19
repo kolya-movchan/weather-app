@@ -45,26 +45,9 @@
     </button>
   </div>
 
-  <div class="forecast">
-    <div class="forecast__period">
-      <RouterLink :to="{ name: 'home' }" class="logo-container">
-        <button class="animated-button">
-            <span>Day</span>
-            <span></span>
-          </button>
-      </RouterLink>
-
-      <RouterLink :to="{ name: 'home' }" class="logo-container">
-        <button class="animated-button">
-            <span>Week</span>
-            <span></span>
-          </button>
-      </RouterLink>
-    </div>
-
-     <div class="flex flex-col items-center text-white py-12" v-if="dataLoaded">
-      <h1 class="text-4xl mb-2">{{ route.params.city }}</h1>
-      <p class="text-sm mb-12">
+    <div class="info-window" v-if="dataLoaded">
+       <h1 class="info-window__title">{{ route.params.city }}</h1>
+       <p class="info-window__row">
         {{
           new Date(time).toLocaleDateString(
             "en-us",
@@ -84,24 +67,76 @@
           )
         }}
       </p>
-      <p class="text-8xl mb-8">
+
+      <p class="">
         {{ Math.round(current.temp) }}&deg;
       </p>
-      <p>
-        Feels like
-        {{ Math.round(current.feels_like) }} &deg;
-      </p>
-      <p class="capitalize">
+
+      <p class="info-window__row info-window__row--capitalize">
         {{ current.weather[0].description }}
       </p>
+
       <img
-        class="w-[150px] h-auto"
+        class="info-window__picture"
         :src="
           `http://openweathermap.org/img/wn/${current.weather[0].icon}@2x.png`
         "
-        alt=""
+        alt="current weather icon"
       />
     </div>
+
+  <div class="forecast">
+      <div class="forecast__period">
+        <RouterLink :to="{ name: 'home' }" class="logo-container">
+          <button class="animated-button">
+              <span>Day</span>
+              <span></span>
+            </button>
+        </RouterLink>
+
+        <RouterLink :to="{ name: 'home' }" class="logo-container">
+          <button class="animated-button">
+              <span>Week</span>
+              <span></span>
+            </button>
+        </RouterLink>
+      </div>
+
+  <div class="forecast__container">
+      <div class="hours" v-if="dataLoaded">
+        <div class="hours__container">
+          <div class="hours__box">
+            <div
+              v-for="hourData in hourly"
+              :key="hourData.dt"
+              class="hours__item"
+            >
+              <p class="hours__item-text">
+                {{
+                  new Date(
+                    hourData.currentTime
+                  ).toLocaleTimeString("en-us", {
+                    hour: "numeric",
+                  })
+                }}
+              </p>
+
+              <img
+                class="hours__item-image"
+                :src="
+                  `http://openweathermap.org/img/wn/${hourData.weather[0].icon}@2x.png`
+                "
+                alt=""
+              />
+
+              <p class="text-xl">
+                {{ Math.round(hourData.temp) }}&deg;
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
   </div>
 
    <div class="diagram"></div>
@@ -118,6 +153,7 @@
   const dataLoaded = ref(null);
   const time = ref(null);
   const current = ref(null);
+  const hourly = ref(null);
 
 
   const getWeatherData = async (a, b) => {
@@ -126,8 +162,6 @@
         `https://api.openweathermap.org/data/2.5/onecall?lat=${route.query.lat}&lon=${route.query.lng}&exclude={part}&appid=f4bff0686f0ff9a57e4f9d2bc578d9e9&units=imperial`
 
     );
-
-      // console.log(weatherData);
 
       // cal current date & time
       const localOffset = new Date().getTimezoneOffset() * 60000;
@@ -148,9 +182,9 @@
     }
   };
 
-
   const previewCity = async (searchResult) => {
     const [city, state] = searchResult.place_name.split(",");
+  
     router.push({
       name: "cityView",
       params: { state: state.replaceAll(" ", ""), city: city },
@@ -169,6 +203,7 @@
       dataLoaded.value = true;
       time.value = weatherData.currentTime;
       current.value = weatherData.current;
+      hourly.value = weatherData.hourly;
     }
 
     console.log(weatherData.currentTime)

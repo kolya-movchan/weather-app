@@ -1,0 +1,31 @@
+.hours {
+  width: 100%;
+  padding-top: 40px;
+
+  &__container {
+    color: #fff;
+  }
+
+  &__box {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__item-text {
+    white-space: nowrap;
+  }
+
+  &__item-image {
+    width: auto;
+    height: 50px;
+    object-fit: cover;
+  }
+}
+
+

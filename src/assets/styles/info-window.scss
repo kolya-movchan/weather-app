@@ -1,0 +1,25 @@
+.info-window {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $main-color;
+  background-color: #ADD8FF;
+  border-radius: 25px;
+  gap: 1rem;
+
+  &__title {
+    margin: 0;
+  }
+
+  &__row {
+    margin: 0;
+
+    &--capitalize {
+      text-transform: capitalize;
+    }
+  }
+
+  &__picture {
+    width: 75px;
+  }
+}
