@@ -1,11 +1,14 @@
 .info-window {
+  color: $main-color;
+  border-radius: 25px;
+  min-height: 75px;
+  background-color: #bee1ff;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $main-color;
-  background-color: #bee1ff;
-  border-radius: 25px;
   gap: 1rem;
+  // position: relative;
 
   &__title {
     margin: 0;

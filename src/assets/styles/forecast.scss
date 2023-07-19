@@ -8,9 +8,15 @@
   background-color: #ADD8FF;
   overflow-x: auto;
 
+  &--loading {
+    justify-content: center;
+  }
+
   &__container {
     display: flex;
     align-items: center;
+    // width: 100%;
+    // position: relative;
   }
 
   &__period {
