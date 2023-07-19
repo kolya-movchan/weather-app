@@ -9,6 +9,7 @@
         @input="getSearchResults"
       >
       <label for="input" class="label">Search for a city</label>
+
     <div class="underline"></div>
 
         <ul class="city-list" v-if="mapboxSearchResults" > 
@@ -86,75 +87,83 @@
     </div>
 
   <div class="forecast">
-      <div class="forecast__period">
-        <RouterLink :to="{ name: 'home' }" class="logo-container">
-          <button class="animated-button">
-              <span>Day</span>
-              <span></span>
-            </button>
-        </RouterLink>
+    <div class="forecast__period">
+      <RouterLink :to="{ name: 'home' }" class="logo-container">
+        <button class="animated-button">
+            <span>Day</span>
+            <span></span>
+          </button>
+      </RouterLink>
 
-        <RouterLink :to="{ name: 'home' }" class="logo-container">
-          <button class="animated-button">
-              <span>Week</span>
-              <span></span>
-            </button>
-        </RouterLink>
-      </div>
+      <RouterLink :to="{ name: 'home' }" class="logo-container">
+        <button class="animated-button">
+            <span>Week</span>
+            <span></span>
+          </button>
+      </RouterLink>
+    </div>
 
-  <div class="forecast__container">
-      <div class="hours" v-if="dataLoaded">
-        <div class="hours__container">
-          <div class="hours__box">
-            <div
-              v-for="hourData in hourly"
-              :key="hourData.dt"
-              class="hours__item"
-            >
-              <p class="hours__item-text">
-                {{
-                  new Date(
-                    hourData.currentTime
-                  ).toLocaleTimeString("en-us", {
-                    hour: "numeric",
-                  })
-                }}
-              </p>
+    <div class="forecast__container">
+        <div class="hours" v-if="dataLoaded">
+          <div class="hours__container">
+            <div class="hours__box">
+              <div
+                v-for="hourData in hourly"
+                :key="hourData.dt"
+                class="hours__item"
+              >
+                <p class="hours__item-text">
+                  {{
+                    new Date(
+                      hourData.currentTime
+                    ).toLocaleTimeString("en-us", {
+                      hour: "numeric",
+                    })
+                  }}
+                </p>
 
-              <img
-                class="hours__item-image"
-                :src="
-                  `http://openweathermap.org/img/wn/${hourData.weather[0].icon}@2x.png`
-                "
-                alt=""
-              />
+                <img
+                  class="hours__item-image"
+                  :src="
+                    `http://openweathermap.org/img/wn/${hourData.weather[0].icon}@2x.png`
+                  "
+                  alt=""
+                />
 
-              <p class="text-xl">
-                {{ Math.round(hourData.temp) }}&deg;
-              </p>
+                <p class="text-xl">
+                  {{ Math.round(hourData.temp) }}&deg;
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-  </div>
+    </div>
   </div>
 
-   <div class="diagram"></div>
+    <div class="diagram" v-if="dataLoaded">
+      <BarChart :key="chartKey" :dataForChart="dataForChart" />
+    </div>
 </template>
 
 <script setup>
   import { ref } from "vue";
   import axios from "axios";
   import { useRouter, useRoute } from "vue-router";
+  import BarChart from "./BarChart.vue";
 
   const router = useRouter();
   const route = useRoute();
 
-  const dataLoaded = ref(null);
+  const dataLoaded = ref(false);
   const time = ref(null);
   const current = ref(null);
   const hourly = ref(null);
-
+  const daily = ref(null);
+  const dataForChart = ref({
+    labels: ['1', '2'],
+    datasets: [{ data: ['2'] }],
+  });
+  const chartKey = ref(0);
 
   const getWeatherData = async (a, b) => {
     try {
@@ -204,9 +213,24 @@
       time.value = weatherData.currentTime;
       current.value = weatherData.current;
       hourly.value = weatherData.hourly;
+      daily.value = weatherData.daily;
+
+      dataForChart.value = {
+       labels: weatherData.daily.map((item) => (
+        new Date(item.dt * 1000).toLocaleDateString(
+          "en-us",
+          {
+            weekday: "long",
+          }
+        )
+      )),
+        datasets: [{ data: weatherData.daily.map(item => item.temp.day) }],
+      }
     }
 
-    console.log(weatherData.currentTime)
+      chartKey.value++;
+
+    // console.log(dataForChart)
   };
 
   const mapboxAPIKey =
