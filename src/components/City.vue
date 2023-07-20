@@ -130,10 +130,11 @@
       </div>
     </div>
 
-  <div class="forecast" :class="{ 'loading': isLoading, 'forecast--loading': !dataLoaded }">
+  <div class="forecast" :class="{ 'loading': isLoading, 'forecast--loading': !dataLoaded, 'forecast--weekly': weekIsActive }">
     <div class="forecast__period" v-if="dataLoaded">
         <button
           class="animated-button"
+          :class="{'animated-button--active': !weekIsActive}"
           @click="updateCityView()"
         >
             <span>Day</span>
@@ -142,6 +143,7 @@
 
       <button
         class="animated-button"
+        :class="{'animated-button--active': weekIsActive}"
         @click="updateCityView(true)"
       >
           <span>Week</span>
@@ -150,7 +152,7 @@
     </div>
 
     <div class="forecast__container">
-        <div class="hours" v-if="dataLoaded">
+        <div class="hours" v-if="dataLoaded && !weekIsActive">
           <div class="hours__container">
             <div class="hours__box">
               <div
@@ -173,10 +175,10 @@
                   :src="
                     `http://openweathermap.org/img/wn/${hourData.weather[0].icon}@2x.png`
                   "
-                  alt=""
+                  alt="image of the weather"
                 />
 
-                <p class="text-xl">
+                <p>
                   {{ Math.round(hourData.temp) }}&deg;
                 </p>
               </div>
@@ -184,7 +186,41 @@
           </div>
         </div>
 
-        <div v-else="data">
+      <div class="hours" v-if="dataLoaded && weekIsActive">
+        <div class="hours__container">
+          <div class="hours__box hours__box--weekly">
+            <div
+              v-for="day in daily"
+              :key="day.dt"
+              class="hours__item"
+            >
+              <p class="hours__item-text">
+                {{
+                  new Date(day.dt * 1000).toLocaleDateString(
+                    "en-us",
+                    {
+                      weekday: "long",
+                    }
+                  )
+                }}
+              </p>
+              <img
+                class="hours__item-image"
+                :src="
+                  `http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`
+                "
+                alt="image of the weather"
+              />
+              <div>
+                <p>H: {{ Math.round(day.temp.max) }}</p>
+                <p>L: {{ Math.round(day.temp.min) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <div v-if="!dataLoaded">
           <div class="preloader" style="opacity: 1; ">
             <div>
               <svg version="1.1" id="sun" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="10px" height="10px" viewBox="0 0 10 10" enable-background="new 0 0 10 10" xml:space="preserve" style="opacity: 1; margin-left: 0px; margin-top: 0px;">
@@ -254,7 +290,7 @@
     datasets: [{ data: [] }],
   });
   const chartKey = ref(0);
-  // const ipAddress = ref("");
+  const weekIsActive = ref(null);
 
   const getWeatherData = async (a, b) => {
     try {
@@ -267,7 +303,7 @@
       weatherData.data.currentTime =
         utc + 1000 * weatherData.data.timezone_offset;
 
-      // cal hourly weather offset
+      // cal hourly wxeather offset
       weatherData.data.hourly.forEach((hour) => {
         const utc = hour.dt * 1000 + localOffset;
         hour.currentTime =
@@ -281,7 +317,11 @@
   };
 
   const updateCityView = async(weekMode = false) => {
-     mapboxSearchResults.value = null;
+    if (dataLoaded.value && !weekMode && !weekIsActive.value) {
+      return
+    } else if (dataLoaded.value && weekMode && weekIsActive.value) {
+      return
+    }
 
     const weatherData = await getWeatherData();
 
@@ -291,13 +331,6 @@
       current.value = weatherData.current;
       hourly.value = weatherData.hourly.slice(0, 24);
       daily.value = weatherData.daily;
-
-
-      console.log('XXXXXXXXXXXx', weatherData)
-      console.log('hourly.value', weatherData.hourly.slice(0, 24))
-      console.log('daily.value ', weatherData.daily)
-      console.log('HOURLY', hourly.value.map(item => item.temp))
-      console.log('DAILY', daily.value.map(item => item.temp))
 
       searchQuery.value = "";
 
@@ -311,6 +344,8 @@
           })),
           datasets: [{ data: hourly.value.map(item => item.temp) }],
         }
+
+        weekIsActive.value = false;
       } else {
          dataForChart.value = {
           labels: weatherData.daily.map((item) => (
@@ -323,6 +358,8 @@
           )),
           datasets: [{ data: daily.value.map(item => item.temp.day) }],
         }
+
+        weekIsActive.value = true;
       }
     }
 
@@ -332,7 +369,7 @@
   }
 
   const previewCity = (searchResult) => {
-    console.log('searchResult', searchResult)
+    // console.log('searchResult', searchResult)
     const [city, state] = searchResult.place_name.split(",");
   
     router.push({
@@ -346,6 +383,7 @@
     });
 
     isLoading.value = true;
+    mapboxSearchResults.value = null;
 
     updateCityView();
   };

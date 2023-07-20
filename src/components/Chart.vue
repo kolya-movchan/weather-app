@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
   import {
     Chart as ChartJS,
     CategoryScale,
@@ -38,7 +38,7 @@ export default {
   },
   data() {
     return {
-      chartId: 'my-chart-id', 
+      chartId: 'my-chart-id',
       type: "line",
       chartData: {
         labels: this.dataForChart.labels,
@@ -57,13 +57,12 @@ export default {
       }
     }
   },
-
-   created() {
-    console.log('PROPS:', this.dataForChart);
-    // console.log('PROPS TTTTTTTTTT:', Array.from(new Set([...this.dataForChart.datasets[0].data])));
-  },
 }
 </script>
+
+
+
+
 
 <!-- <template>
   <div class="chart-container">

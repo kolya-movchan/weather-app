@@ -2,6 +2,10 @@
   width: 100%;
   padding-top: 40px;
 
+  &--weekly {
+    margin: 0 auto;
+  }
+
   &__container {
     color: #fff;
   }
@@ -9,6 +13,11 @@
   &__box {
     display: flex;
     gap: 1.5rem;
+
+    &--weekly {
+      justify-content: center;
+      margin: 0 auto;
+    }
   }
 
   &__item {

@@ -1,12 +1,17 @@
 .forecast {
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
+  // justify-content: center;
   padding: 20px;
   min-height: 150px;
   border-radius: 25px;
   border: 1px solid #b2acac2e;
   background-color: #ADD8FF;
   overflow-x: auto;
+
+  &--weekly {
+    display: block;
+  }
 
   &--loading {
     justify-content: center;
@@ -15,8 +20,7 @@
   &__container {
     display: flex;
     align-items: center;
-    // width: 100%;
-    // position: relative;
+    justify-content: center;
   }
 
   &__period {
