@@ -1,0 +1,21 @@
+/* Transition for the first component */
+.fade-hours-enter-active,
+.fade-hours-leave-active {
+  transition: opacity 0.25s; /* Adjust the duration as needed */
+}
+
+.fade-hours-enter-from,
+.fade-hours-leave-to {
+  opacity: 0;
+}
+
+/* Transition for the second component */
+.fade-hours-weekly-enter-active,
+.fade-hours-weekly-leave-active {
+  transition: opacity 0.25s 0.25s; /* Adjust the duration as needed */
+}
+
+.fade-hours-weekly-enter-from,
+.fade-hours-weekly-leave-to {
+  opacity: 0;
+}

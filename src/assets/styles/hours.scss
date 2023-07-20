@@ -1,6 +1,7 @@
 .hours {
   width: 100%;
   padding-top: 40px;
+  transition: 1s;
 
   &--weekly {
     margin: 0 auto;
@@ -36,5 +37,3 @@
     object-fit: cover;
   }
 }
-
-
