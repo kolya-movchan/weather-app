@@ -39,8 +39,6 @@
   import Swal from 'sweetalert2';
   import { v4 as uuidv4 } from 'uuid'; // Import the v4 method from uuid
 
-  // console.log(uuidv4())
-
   const visibleAdd = ref(false);
   const layoutComponents = ref([{ data: [ Layout ], id: uuidv4() }]);
 
@@ -51,7 +49,38 @@
   };
 
   const DeleteCard = (id) => {
-    layoutComponents.value = layoutComponents.value.filter(layout => layout.id !== id);
+
+    if (layoutComponents.value.length === 1) {
+      Swal.fire(
+          'Failure!',
+          'There should be at least 1 weather card',
+          'error'
+        );
+
+      return
+    }
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel' // You can customize the cancel button text if needed
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // User clicked the "Yes, delete it!" button
+        layoutComponents.value = layoutComponents.value.filter(layout => layout.id !== id);
+
+        Swal.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        );
+      }
+    });
   };
 
   const addLayoutComponent = () => {
