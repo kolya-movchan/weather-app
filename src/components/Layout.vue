@@ -40,14 +40,14 @@
     </ul>
   </div>
 
-    <button class="animated-button" v-if="dataLoaded">
+    <!-- <button class="animated-button" v-if="dataLoaded">
       <span>+</span>
       <span></span>
-    </button>
+    </button> -->
   </div>
 
     <div class="info-window" :class="{ 'loading': isLoading }" v-if="dataLoaded">
-       <h1 class="info-window__title"> {{ route.params.city }}</h1>
+       <h1 class="info-window__title">{{ cityName }}</h1>
        <p class="info-window__row">
         {{
           new Date(time).toLocaleDateString(
@@ -210,7 +210,11 @@
   import axios from "axios";
   import { useRouter, useRoute } from "vue-router";
   import Chart from "./Chart.vue";
-  import Preloader from "./Preloader.vue"
+  import Preloader from "./Preloader.vue";
+
+  const { props } = defineProps(['dataLoaded']);
+
+  console.log(props);
 
   const router = useRouter();
   const route = useRoute();
@@ -221,6 +225,7 @@
   const hourly = ref(null);
   const daily = ref(null);
   const isLoading = ref(null);
+  const cityName = ref('');
   const dataForChart = ref({
     labels: [],
     datasets: [{ data: [] }],
@@ -321,7 +326,9 @@
 
   const previewCity = (searchResult) => {
     const [city, state] = searchResult.place_name.split(",");
-  
+
+    cityName.value = city;
+
     router.push({
       name: "cityView",
       params: { state: state.replaceAll(" ", ""), city: city },
@@ -352,6 +359,8 @@
 
   //     const city = locationData.data.city;
   //     const state = locationData.data.country_name;
+
+  //     cityName.value = city;
 
   //     router.push({
   //       name: "cityView",

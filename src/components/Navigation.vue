@@ -1,13 +1,13 @@
 <template>
-  <div class="navigation">
-    <RouterLink :to="{ name: 'home' }" class="navigation__link">
-      Home
-    </RouterLink>
+    <div>
+      <RouterLink :to="{ name: 'home' }" class="navigation__link">
+        Home
+      </RouterLink>
 
-    <RouterLink :to="{ name: 'home' }" class="navigation__link">
-      Favorites
-    </RouterLink>
-  </div>
+      <RouterLink :to="{ name: 'home' }" class="navigation__link">
+        Favorites
+      </RouterLink>
+    </div>
 </template>
 
 <script setup>
