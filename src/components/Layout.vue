@@ -27,23 +27,40 @@
             No results match your query, try a different term.
           </p>
 
-        <template v-else>
-          <li
-            v-for="searchResult in mapboxSearchResults"
-            :key="searchResult.id"
-            class="city-list__item city-list__item--success"
-            @click="previewCity(searchResult)"
-          >
-            {{ searchResult.place_name }}
-          </li>
+          <template v-else>
+            <div @click='showAddButton'>
+              <li
+                v-for="searchResult in mapboxSearchResults"
+                :key="searchResult.id"
+                class="city-list__item city-list__item--success"
+                @click='previewCity(searchResult)'
+              >
+                {{ searchResult.place_name }}
+              </li>
+            </div>
         </template>
-    </ul>
-  </div>
+        </ul>
+     </div>
 
-    <!-- <button class="animated-button" v-if="dataLoaded">
-      <span>+</span>
-      <span></span>
-    </button> -->
+      <button
+        class="button-delete"
+        @click="deleteCard()"
+      >
+          <span class="text">
+            Remove
+          </span>
+          
+          <span class="icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24">
+                <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z">
+              </path>
+            </svg>
+          </span>
+        </button>
   </div>
 
     <div class="info-window" :class="{ 'loading': isLoading }" v-if="dataLoaded">
@@ -206,15 +223,11 @@
 </template>
 
 <script setup>
-  import { ref, onMounted } from "vue";
+  import { ref, onMounted, watchEffect } from "vue";
   import axios from "axios";
   import { useRouter, useRoute } from "vue-router";
   import Chart from "./Chart.vue";
   import Preloader from "./Preloader.vue";
-
-  const { props } = defineProps(['dataLoaded']);
-
-  console.log(props);
 
   const router = useRouter();
   const route = useRoute();
@@ -270,7 +283,7 @@
     // console.log(2)
 
     if (!weekMode) {
-      console.log(3)
+      // console.log(3)
         dataForChart.value = {
         labels: hourly.value.map(hour =>
           new Date(
@@ -405,4 +418,30 @@
       mapboxSearchResults.value = null;
     }, 300);
   };
+
+</script>
+
+<script> 
+
+  export default {
+    props: {
+      activateButton: null,
+      onDelete: null,
+      id: null,
+    },
+    methods:{
+      showAddButton()
+        {
+          this.$emit('activateButton', true)
+        },
+      deleteCard()
+        {
+          this.$emit('onDelete', this.id)
+        }
+      },
+
+  created() {
+    console.log('PROPS:', this.id);
+  },
+    };
 </script>
