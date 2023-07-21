@@ -49,8 +49,6 @@
   const visibleAdd = ref(false);
   const layoutComponents = ref([{ data: [ Layout ], id: uuidv4() }]);
 
-  console.log('layoutComponents', layoutComponents)
-
   const ShowButtonAdd = () => {
     visibleAdd.value = true;
   };

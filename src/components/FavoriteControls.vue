@@ -76,4 +76,24 @@
     });
   }
 
+  // const props = defineProps(['newCity']);
+
+  // console.log(props.newCity)
+
+
+</script>
+
+<script>
+  export default {
+    name: 'FavoriteControls',
+    props: {
+      dataForChart: {
+        newCity: null,
+      }
+    },
+    created() {
+      console.log('PROPS:', this.newCity);
+      // console.log('PROPS TTTTTTTTTT:', Array.from(new Set([...this.dataForChart.datasets[0].data])));
+    },
+  }
 </script>

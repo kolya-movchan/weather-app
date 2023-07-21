@@ -63,7 +63,7 @@
             </span>
           </button>
 
-          <FavoriteControls />
+          <FavoriteControls :newCity="true" />
       </div>
   </div>
 
@@ -367,36 +367,36 @@
 
   // IP LOGIC TO BE ACTIVATED LATER 
 
-  const getCityByIp = async() => {
-    try {
-      const IpData = await axios.get('https://api.ipify.org?format=json');
+  // const getCityByIp = async() => {
+  //   try {
+  //     const IpData = await axios.get('https://api.ipify.org?format=json');
 
-      const locationData = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKeyForIP}&ip=${IpData.data.ip}`);
+  //     const locationData = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKeyForIP}&ip=${IpData.data.ip}`);
 
-      const city = locationData.data.city;
-      const state = locationData.data.country_name;
+  //     const city = locationData.data.city;
+  //     const state = locationData.data.country_name;
 
-      cityName.value = city;
+  //     cityName.value = city;
 
-      router.push({
-        name: "cityView",
-        params: { state, city },
-        query: {
-          lat: locationData.data.latitude,
-          lng: locationData.data.longitude,
-          preview: true,
-        },
-      });
+  //     router.push({
+  //       name: "cityView",
+  //       params: { state, city },
+  //       query: {
+  //         lat: locationData.data.latitude,
+  //         lng: locationData.data.longitude,
+  //         preview: true,
+  //       },
+  //     });
 
-      setTimeout(() => {
-        getCityView();
-      }, 300);
-    } catch (e) {
-      console.error(e)
-    }
-  }
+  //     setTimeout(() => {
+  //       getCityView();
+  //     }, 300);
+  //   } catch (e) {
+  //     console.error(e)
+  //   }
+  // }
 
-  onMounted(getCityByIp);
+  // onMounted(getCityByIp);
 
   const mapboxAPIKey =
     "pk.eyJ1Ijoia21vY2hhbmMiLCJhIjoiY2xrOGNvNXhwMGh3YjNzcm9jeDI1NWVxZiJ9.0P8k9GkO2fhNI-juyaOkDg";
