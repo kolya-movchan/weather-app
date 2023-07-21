@@ -42,25 +42,29 @@
         </ul>
      </div>
 
-      <button
-        class="button-delete"
-        @click="deleteCard()"
-      >
-          <span class="text">
-            Remove
-          </span>
-          
-          <span class="icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24">
-                <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z">
-              </path>
-            </svg>
-          </span>
-        </button>
+      <div class="controls">
+        <button
+          class="button-control"
+          @click="deleteCard()"
+        >
+            <span class="text">
+              Delete
+            </span>
+        
+            <span class="icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24">
+                  <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z">
+                </path>
+              </svg>
+            </span>
+          </button>
+
+          <FavoriteControls />
+      </div>
   </div>
 
     <div class="info-window" :class="{ 'loading': isLoading }" v-if="dataLoaded">
@@ -228,6 +232,7 @@
   import { useRouter, useRoute } from "vue-router";
   import Chart from "./Chart.vue";
   import Preloader from "./Preloader.vue";
+  import FavoriteControls from "./FavoriteControls.vue";
 
   const router = useRouter();
   const route = useRoute();
@@ -247,8 +252,6 @@
   const weekIsActive = ref(null);
 
   const getWeatherData = async () => {
-    console.log('ROUTE:', route);
-
     try {
       const weatherData = await axios.get(
         `https://api.openweathermap.org/data/2.5/onecall?lat=${route.query.lat}&lon=${route.query.lng}&exclude={part}&appid=f4bff0686f0ff9a57e4f9d2bc578d9e9&units=imperial`);
@@ -274,18 +277,18 @@
 
   const updateCityView = (weekMode = false) => {
     if (dataLoaded.value && !weekMode && !weekIsActive.value) {
-        console.log(1.1)
+        // console.log(1.1)
 
       return
     } else if (dataLoaded.value && weekMode && weekIsActive.value) {
-        console.log(1.2)
+        // console.log(1.2)
 
       return
     }
-    console.log(2)
+    // console.log(2)
 
     if (!weekMode) {
-      console.log(3)
+      // console.log(3)
         dataForChart.value = {
         labels: hourly.value.map(hour =>
           new Date(
@@ -298,7 +301,7 @@
 
         weekIsActive.value = false;
       } else {
-          console.log(4)
+          // console.log(4)
          dataForChart.value = {
           labels: daily.value.map((item) => (
             new Date(item.dt * 1000).toLocaleDateString(
@@ -311,7 +314,7 @@
           datasets: [{ data: daily.value.map(item => item.temp.day) }],
         }
 
-        console.log(5)
+        // console.log(5)
         weekIsActive.value = true;
       }
 
@@ -329,8 +332,6 @@
 
       searchQuery.value = "";
     }
-
-    console.log('weatherData', weatherData)
 
     isLoading.value = false;
 
@@ -371,8 +372,6 @@
       const IpData = await axios.get('https://api.ipify.org?format=json');
 
       const locationData = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKeyForIP}&ip=${IpData.data.ip}`);
-
-      console.log(locationData.data.latitude, locationData.data.longitude);
 
       const city = locationData.data.city;
       const state = locationData.data.country_name;
@@ -443,11 +442,10 @@
       deleteCard()
         {
           this.$emit('onDelete', this.id)
-        }
-      },
-
-  created() {
-    console.log('PROPS:', this.id);
-  },
+        },
+    },
+  // created() {
+  //   console.log('PROPS:', this.id);
+  // },
     };
 </script>

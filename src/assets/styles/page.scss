@@ -30,3 +30,10 @@ body {
   border: 2px solid #b2acac2e;
   border-radius: 25px;
 }
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+}

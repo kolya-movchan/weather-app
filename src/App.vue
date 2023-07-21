@@ -10,14 +10,21 @@
           class="animated-button"
           @click="addLayoutComponent"
           :disabled="!visibleAdd"
-          :title="visibleAdd ? 'Add a new card' : 'Choose at least one city from the search to add a new card'">
+          :title="visibleAdd 
+            ? 'Add a new card'
+            : 'Choose at least one city from the search to add a new card'"
+          >
             <span>Add</span>
             <span></span>
         </button>
       </div>
 
       <main class="main">
-        <div class="wrapper" v-for="(componentData) in layoutComponents" :key="componentData.id">
+        <div
+          class="wrapper"
+          v-for="(componentData) in layoutComponents"
+          :key="componentData.id"
+        >
           <component
             :is="componentData.data[0]"
             @activateButton="ShowButtonAdd($event)"
@@ -37,7 +44,7 @@
   import Layout from "./components/Layout.vue";
   import CityView from "./views/CityView.vue";
   import Swal from 'sweetalert2';
-  import { v4 as uuidv4 } from 'uuid'; // Import the v4 method from uuid
+  import { v4 as uuidv4 } from 'uuid';
 
   const visibleAdd = ref(false);
   const layoutComponents = ref([{ data: [ Layout ], id: uuidv4() }]);
@@ -68,10 +75,9 @@
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'Cancel' // You can customize the cancel button text if needed
+      cancelButtonText: 'Cancel'
     }).then((result) => {
       if (result.isConfirmed) {
-        // User clicked the "Yes, delete it!" button
         layoutComponents.value = layoutComponents.value.filter(layout => layout.id !== id);
 
         Swal.fire(
