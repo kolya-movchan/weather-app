@@ -1,5 +1,5 @@
 <template>
-  <div class="city-container">
+  <div class="city-container" v-if="!favMode">
     <div class="input-container">
       <input
         type="text"
@@ -63,11 +63,18 @@
             </span>
           </button>
 
-          <FavoriteControls :newCity="true" />
+          <FavoriteControls v-if="!checkIfFavorite()" />
+
+           <img
+              src="../assets/pictures/favorite.png"
+              alt="favorite icon"
+              class="favorite-added"
+              v-else
+          />
       </div>
   </div>
 
-    <div class="info-window" :class="{ 'loading': isLoading }" v-if="dataLoaded">
+    <div class="info-window" :class="{ 'loading': isLoading, 'info-window--fav': favMode }" v-if="dataLoaded">
        <h1 class="info-window__title">{{ cityName }}</h1>
        <p class="info-window__row">
         {{
@@ -121,7 +128,7 @@
     :class="{
       'loading': isLoading,
       'forecast--loading': !dataLoaded,
-      'forecast--weekly': weekIsActive
+      'forecast--weekly': weekIsActive,
     }"
   >
     <div class="forecast__period" v-if="dataLoaded">
@@ -227,7 +234,7 @@
 </template>
 
 <script setup>
-  import { ref, onMounted, watchEffect } from "vue";
+  import { ref, onMounted, watchEffect, onUpdated } from "vue";
   import axios from "axios";
   import { useRouter, useRoute } from "vue-router";
   import Chart from "./Chart.vue";
@@ -251,10 +258,10 @@
   const chartKey = ref(0);
   const weekIsActive = ref(null);
 
-  const getWeatherData = async () => {
+  const getWeatherData = async (lat, lng) => {
     try {
       const weatherData = await axios.get(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${route.query.lat}&lon=${route.query.lng}&exclude={part}&appid=f4bff0686f0ff9a57e4f9d2bc578d9e9&units=imperial`);
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude={part}&appid=f4bff0686f0ff9a57e4f9d2bc578d9e9&units=imperial`);
 
       // cal current date & time
       const localOffset = new Date().getTimezoneOffset() * 60000;
@@ -321,8 +328,10 @@
       chartKey.value++;
   }
 
-  const getCityView = async() => {
-    const weatherData = await getWeatherData();
+  const newCity = ref(true);
+
+  const getCityView = async(lat, lng) => {
+    const weatherData = await getWeatherData(lat, lng);
 
     if (weatherData) {
       time.value = weatherData.currentTime;
@@ -335,7 +344,8 @@
 
     isLoading.value = false;
 
-    console.log(1)
+
+    // console.log(1)
 
     updateCityView();
 
@@ -360,8 +370,23 @@
     isLoading.value = true;
     mapboxSearchResults.value = null;
 
-    getCityView();
+    setTimeout(() => {
+      getCityView(route.query.lat, route.query.lng);
+    }, 300);
   };
+
+  const checkIfFavorite = ref(null)
+
+  checkIfFavorite.value = () => {
+    if (JSON.parse(localStorage.getItem("savedCities"))) {
+      // console.log(JSON.parse(localStorage.getItem("savedCities")).some(city => city.city === route.params.city))
+        return JSON.parse(localStorage.getItem("savedCities")).some(city => city.city === route.params.city)
+    } else {
+      return false
+    }
+  }
+
+  // console.log('checkIfFavorite', checkIfFavorite.value())
 
   const apiKeyForIP = '72da4f70eb0348ec9c3c8b2d9cbaef25'
 
@@ -424,6 +449,18 @@
     }, 300);
   };
 
+  const props = defineProps(['favMode', 'coordinates'])
+
+  const showFromFav = () => {
+    if (props.favMode) {
+      getCityView(props.coordinates.lat, props.coordinates.lng);
+      cityName.value = props.coordinates.city;
+    }
+    console.log('MOUNTED')
+  }
+
+  onMounted(showFromFav)
+
 </script>
 
 <script> 
@@ -433,6 +470,8 @@
       activateButton: null,
       onDelete: null,
       id: null,
+      favMode: null,
+      coordinates: null,
     },
     methods:{
       showAddButton()
@@ -444,8 +483,9 @@
           this.$emit('onDelete', this.id)
         },
     },
-  // created() {
-  //   console.log('PROPS:', this.id);
-  // },
+  created() {
+    // console.log('PROPS:', this.favMode);
+    console.log('PROPS:', this.coordinates);
+  },
     };
 </script>

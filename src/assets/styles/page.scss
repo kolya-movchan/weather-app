@@ -15,7 +15,7 @@ body {
 .main {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 .wrapper {
@@ -29,6 +29,10 @@ body {
   backdrop-filter: blur(12px);
   border: 2px solid #b2acac2e;
   border-radius: 25px;
+
+  &--fav {
+    margin-top: 20px;
+  }
 }
 
 .controls {

@@ -26,25 +26,38 @@
 
 <script setup>
   import { RouterLink, useRoute, useRouter } from "vue-router";
-  import { ref } from "vue";
-  import { v4 as uuidv4 } from 'uuid';
   import Swal from 'sweetalert2';
+  import { ref, onUpdated } from "vue";
+  import { v4 as uuidv4 } from 'uuid';
 
-  const savedCities = ref([]);
   const route = useRoute();
   const router = useRouter();
+
+  const savedCities = ref([]);
   const favoriteMode = ref(false);
 
   const addToFavorite = () => {
-    console.log('added')
-
-    favoriteMode.value = !favoriteMode.value;
+    // console.log('added')
 
     if (localStorage.getItem("savedCities")) {
+        if (JSON.parse(localStorage.getItem("savedCities")).length === 3) {
+          console.log('limit');
+
+          Swal.fire(
+            'Failure!',
+            'Maximum number of saved cards are 5. Please, delete some to save new cards',
+            'error'
+          );
+
+          return
+        }
+
       savedCities.value = JSON.parse(
         localStorage.getItem("savedCities")
       );
     }
+
+    favoriteMode.value = false;
 
     if (!route.query.preview) {
       return
@@ -76,24 +89,11 @@
     });
   }
 
-  // const props = defineProps(['newCity']);
-
-  // console.log(props.newCity)
-
-
 </script>
 
 <script>
   export default {
     name: 'FavoriteControls',
-    props: {
-      dataForChart: {
-        newCity: null,
-      }
-    },
-    created() {
-      console.log('PROPS:', this.newCity);
-      // console.log('PROPS TTTTTTTTTT:', Array.from(new Set([...this.dataForChart.datasets[0].data])));
-    },
   }
+
 </script>

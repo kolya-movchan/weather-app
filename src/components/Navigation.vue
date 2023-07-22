@@ -4,7 +4,7 @@
         Home
       </RouterLink>
 
-      <RouterLink :to="{ name: 'home' }" class="navigation__link">
+      <RouterLink :to="{ name: 'favorites' }" class="navigation__link">
         Favorites
       </RouterLink>
     </div>

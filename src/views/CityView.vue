@@ -1,12 +1,12 @@
 <template>
-  <Suspense>
+  <!-- <Suspense>
       <template #default>
          <AsyncCityView />
       </template>
-    </Suspense>
+    </Suspense> -->
 </template>
 
 <script setup>
-  import AsyncCityView from "../components/AsyncCityView.vue";
+  // import AsyncCityView from "../components/AsyncCityView.vue";
 
 </script>

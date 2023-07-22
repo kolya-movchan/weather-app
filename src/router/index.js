@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import LayoutSkeleton from '../components/LayoutSkeleton.vue'
 import CityView from '../views/CityView.vue'
+import FavoritesView from '../views/FavoritesView.vue'; // Import the new component
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,12 +9,17 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: LayoutSkeleton
     },
     {
       path: '/weather:state/:city',
       name: 'cityView',
-      component: CityView
+      component: LayoutSkeleton
+    },
+    {
+      path: '/favorites',
+      name: 'favorites',
+      component: FavoritesView,
     },
   ]
 })
