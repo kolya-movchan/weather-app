@@ -96,6 +96,7 @@
     </button>
   </div>
 
+
     <div class="info-window" :class="{ 'loading': isLoading, 'info-window--fav': checkIfFavorite() && favMode }" v-if="dataLoaded">
        <h1 class="info-window__title">{{ cityName }}</h1>
        <p class="info-window__row">
