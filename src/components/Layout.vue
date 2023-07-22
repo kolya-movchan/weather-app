@@ -28,7 +28,7 @@
           </p>
 
           <template v-else>
-            <div @click='showAddButton'>
+            <!-- <div @click='showAddButton'> -->
               <li
                 v-for="searchResult in mapboxSearchResults"
                 :key="searchResult.id"
@@ -37,7 +37,7 @@
               >
                 {{ searchResult.place_name }}
               </li>
-            </div>
+            <!-- </div> -->
         </template>
         </ul>
      </div>
@@ -74,7 +74,7 @@
       </div>
   </div>
 
-    <div class="info-window" :class="{ 'loading': isLoading, 'info-window--fav': favMode }" v-if="dataLoaded">
+    <div class="info-window" :class="{ 'loading': isLoading, 'info-window--fav': checkIfFavorite() && favMode }" v-if="dataLoaded">
        <h1 class="info-window__title">{{ cityName }}</h1>
        <p class="info-window__row">
         {{
@@ -331,6 +331,8 @@
   const newCity = ref(true);
 
   const getCityView = async(lat, lng) => {
+    // console.log(1, lat, lng)
+
     const weatherData = await getWeatherData(lat, lng);
 
     if (weatherData) {
@@ -344,8 +346,6 @@
 
     isLoading.value = false;
 
-
-    // console.log(1)
 
     updateCityView();
 
@@ -378,9 +378,11 @@
   const checkIfFavorite = ref(null)
 
   checkIfFavorite.value = () => {
+        // console.log('cityname', cityName.value);
+        // console.log('saved', JSON.parse(localStorage.getItem("savedCities")));
+
     if (JSON.parse(localStorage.getItem("savedCities"))) {
-      // console.log(JSON.parse(localStorage.getItem("savedCities")).some(city => city.city === route.params.city))
-        return JSON.parse(localStorage.getItem("savedCities")).some(city => city.city === route.params.city)
+        return JSON.parse(localStorage.getItem("savedCities")).some(city => city.city === cityName.value)
     } else {
       return false
     }
@@ -388,40 +390,42 @@
 
   // console.log('checkIfFavorite', checkIfFavorite.value())
 
+  // console.log('checkIfFavorite', checkIfFavorite.value())
+
   const apiKeyForIP = '72da4f70eb0348ec9c3c8b2d9cbaef25'
 
   // IP LOGIC TO BE ACTIVATED LATER 
 
-  // const getCityByIp = async() => {
-  //   try {
-  //     const IpData = await axios.get('https://api.ipify.org?format=json');
+  const getCityByIp = async() => {
+    try {
+      const IpData = await axios.get('https://api.ipify.org?format=json');
 
-  //     const locationData = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKeyForIP}&ip=${IpData.data.ip}`);
+      const locationData = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKeyForIP}&ip=${IpData.data.ip}`);
 
-  //     const city = locationData.data.city;
-  //     const state = locationData.data.country_name;
+      const city = locationData.data.city;
+      const state = locationData.data.country_name;
 
-  //     cityName.value = city;
+      cityName.value = city;
 
-  //     router.push({
-  //       name: "cityView",
-  //       params: { state, city },
-  //       query: {
-  //         lat: locationData.data.latitude,
-  //         lng: locationData.data.longitude,
-  //         preview: true,
-  //       },
-  //     });
+      router.push({
+        name: "cityView",
+        params: { state, city },
+        query: {
+          lat: locationData.data.latitude,
+          lng: locationData.data.longitude,
+          preview: true,
+        },
+      });
 
-  //     setTimeout(() => {
-  //       getCityView();
-  //     }, 300);
-  //   } catch (e) {
-  //     console.error(e)
-  //   }
-  // }
+      // console.log(locationData.data.city, locationData.data.country_name)
 
-  // onMounted(getCityByIp);
+      setTimeout(() => {
+        getCityView(route.query.lat, route.query.lng);
+      }, 300);
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   const mapboxAPIKey =
     "pk.eyJ1Ijoia21vY2hhbmMiLCJhIjoiY2xrOGNvNXhwMGh3YjNzcm9jeDI1NWVxZiJ9.0P8k9GkO2fhNI-juyaOkDg";
@@ -449,17 +453,21 @@
     }, 300);
   };
 
-  const props = defineProps(['favMode', 'coordinates'])
+  const props = defineProps(['favMode', 'coordinates', 'k', 'id', 'onDelete'])
 
   const showFromFav = () => {
     if (props.favMode) {
       getCityView(props.coordinates.lat, props.coordinates.lng);
       cityName.value = props.coordinates.city;
+    } else {
+      getCityByIp();
     }
-    console.log('MOUNTED')
   }
 
-  onMounted(showFromFav)
+  onMounted(showFromFav);
+
+    // console.log('PROP3', props.k)
+
 
 </script>
 
@@ -467,25 +475,27 @@
 
   export default {
     props: {
-      activateButton: null,
+      // activateButton: null,
+      k: null,
       onDelete: null,
       id: null,
       favMode: null,
       coordinates: null,
     },
     methods:{
-      showAddButton()
-        {
-          this.$emit('activateButton', true)
-        },
+      // showAddButton()
+      //   {
+      //     this.$emit('activateButton', true)
+      //   },
       deleteCard()
         {
           this.$emit('onDelete', this.id)
         },
     },
   created() {
-    // console.log('PROPS:', this.favMode);
-    console.log('PROPS:', this.coordinates);
+    console.log('PROPS:', this.favMode);
+    // console.log('PROPS:', this.id);
+    // console.log('PROPS1:', this.k);
   },
     };
 </script>

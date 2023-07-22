@@ -40,7 +40,7 @@
     // console.log('added')
 
     if (localStorage.getItem("savedCities")) {
-        if (JSON.parse(localStorage.getItem("savedCities")).length === 3) {
+        if (JSON.parse(localStorage.getItem("savedCities")).length === 5) {
           console.log('limit');
 
           Swal.fire(
@@ -57,7 +57,7 @@
       );
     }
 
-    favoriteMode.value = false;
+    favoriteMode.value = true;
 
     if (!route.query.preview) {
       return

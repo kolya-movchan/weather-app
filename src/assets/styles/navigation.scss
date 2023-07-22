@@ -7,5 +7,17 @@
     color: $main-color;
     font-weight: 500;
     padding: 10px;
+
+    &.router-link-active {
+      border-radius: 25px;
+      background-color: $main-color; 
+      color: #fff;
+    }
+
+    &:active {
+      background-color: #00668a;
+      border-radius: 25px;
+      color: #fff;
+    }
   }
 }

@@ -3,7 +3,6 @@
     <button
       class="animated-button"
       @click="addLayoutComponent"
-      :disabled="!visibleAdd"
       :title="visibleAdd
         ? 'Add a new card'
         : 'Choose at least one city from the search to add a new card'"
@@ -18,10 +17,9 @@
     v-for="(componentData) in layoutComponents"
     :key="componentData.id"
   >
-
     <component
       :is="componentData.data[0]"
-      @activateButton="ShowButtonAdd($event)"
+      :k="true"
       :id="componentData.id"
       @onDelete="DeleteCard($event)"
     />
@@ -39,11 +37,13 @@
   const visibleAdd = ref(false);
   const layoutComponents = ref([{ data: [ Layout ], id: uuidv4() }]);
 
-  const ShowButtonAdd = () => {
-    visibleAdd.value = true;
-  };
+  // const ShowButtonAdd = () => {
+  //   visibleAdd.value = true;
+  // };
 
   const DeleteCard = (id) => {
+    console.log('id', id)
+
     if (layoutComponents.value.length === 1) {
       Swal.fire(
           'Failure!',
