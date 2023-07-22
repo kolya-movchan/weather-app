@@ -74,6 +74,28 @@
       </div>
   </div>
 
+  <div class="controls-fav" v-else>
+    <button
+      class="button-control"
+      @click="removeFav(cityName)"
+    >
+        <span class="text">
+          Remove
+        </span>
+    
+      <span class="icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24">
+            <path d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z">
+          </path>
+        </svg>
+      </span>
+    </button>
+  </div>
+
     <div class="info-window" :class="{ 'loading': isLoading, 'info-window--fav': checkIfFavorite() && favMode }" v-if="dataLoaded">
        <h1 class="info-window__title">{{ cityName }}</h1>
        <p class="info-window__row">
@@ -240,6 +262,7 @@
   import Chart from "./Chart.vue";
   import Preloader from "./Preloader.vue";
   import FavoriteControls from "./FavoriteControls.vue";
+  import Swal from 'sweetalert2';
 
   const router = useRouter();
   const route = useRoute();
@@ -258,10 +281,13 @@
   const chartKey = ref(0);
   const weekIsActive = ref(null);
 
+  const keyForOpenWeather1 = 'f4bff0686f0ff9a57e4f9d2bc578d9e9';
+  // cons keyForOpenWeather2 = 'bba7c617493e8c52abca4d662d29cc44';
+
   const getWeatherData = async (lat, lng) => {
     try {
       const weatherData = await axios.get(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude={part}&appid=f4bff0686f0ff9a57e4f9d2bc578d9e9&units=imperial`);
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude={part}&appid=${keyForOpenWeather1}&units=imperial`);
 
       // cal current date & time
       const localOffset = new Date().getTimezoneOffset() * 60000;
@@ -278,6 +304,12 @@
 
       return weatherData.data;
     } catch (err) {
+        Swal.fire(
+        'Network Error!',
+        'The server refused to provide data. Please, refresh or try again later',
+        'error'
+      );
+
       console.log(err);
     }
   };
@@ -331,9 +363,9 @@
   const newCity = ref(true);
 
   const getCityView = async(lat, lng) => {
-    // console.log(1, lat, lng)
-
     const weatherData = await getWeatherData(lat, lng);
+
+    // console.log('weatherData', weatherData)
 
     if (weatherData) {
       time.value = weatherData.currentTime;
@@ -402,6 +434,8 @@
 
       const locationData = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKeyForIP}&ip=${IpData.data.ip}`);
 
+      console.log(locationData);
+
       const city = locationData.data.city;
       const state = locationData.data.country_name;
 
@@ -417,13 +451,17 @@
         },
       });
 
-      // console.log(locationData.data.city, locationData.data.country_name)
+      // console.log(route.query.lat, route.query.lng)
 
       setTimeout(() => {
         getCityView(route.query.lat, route.query.lng);
       }, 300);
     } catch (e) {
-      console.error(e)
+       Swal.fire(
+        'Network Error!',
+        'The server refused to provide data. Please, refresh or try again later',
+        'error'
+      );
     }
   }
 
@@ -445,6 +483,12 @@
           mapboxSearchResults.value = result.data.features;
         } catch {
             searchError.value = true;
+
+             Swal.fire(
+              'Network Error!',
+              'The server refused to provide data. Please, refresh or try again later',
+              'error'
+            );
         }
 
         return;
@@ -453,7 +497,14 @@
     }, 300);
   };
 
-  const props = defineProps(['favMode', 'coordinates', 'k', 'id', 'onDelete'])
+  const props = defineProps(['favMode', 'coordinates', 'id', 'onDelete', 'onRemove']);
+
+  // const removeFav = () => {
+  //   // Call the onRemove function passed from the parent
+  //   props.onRemove();
+  //   // Emit the onRemove event to notify the parent component
+  //   emit('onRemove');
+  // };
 
   const showFromFav = () => {
     if (props.favMode) {
@@ -466,8 +517,31 @@
 
   onMounted(showFromFav);
 
-    // console.log('PROP3', props.k)
+  // const removeFav = () => {
+  //   // Emit the onRemove event to notify the parent component
 
+  //   console.log('clicked')
+  //   emit('onRemove', 1);
+  // };
+
+  // const removeFav = () => {
+  //   if (JSON.parse(localStorage.getItem("savedCities"))) {
+  //     const restOfCities = JSON
+  //       .parse(
+  //         localStorage.getItem("savedCities"))
+  //           .filter(city => city.city !== cityName.value);
+
+  //     localStorage.setItem("savedCities", JSON.stringify(restOfCities));
+
+  //     Swal.fire(
+  //       'Deleted!',
+  //       'The card has been removed from favorites.',
+  //       'success'
+  //     );
+  //   }
+
+  //   // isFavorite.value = false;
+  // }
 
 </script>
 
@@ -481,6 +555,7 @@
       id: null,
       favMode: null,
       coordinates: null,
+      onRemove: null,
     },
     methods:{
       // showAddButton()
@@ -491,11 +566,13 @@
         {
           this.$emit('onDelete', this.id)
         },
+      removeFav(city)
+        {
+          this.$emit('onRemove', city)
+        },
     },
   created() {
-    console.log('PROPS:', this.favMode);
-    // console.log('PROPS:', this.id);
-    // console.log('PROPS1:', this.k);
+    // console.log('PROPS:', this.favMode);
   },
     };
 </script>

@@ -41,6 +41,7 @@
   //   visibleAdd.value = true;
   // };
 
+
   const DeleteCard = (id) => {
     console.log('id', id)
 

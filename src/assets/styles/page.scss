@@ -40,4 +40,9 @@ body {
   align-items: center;
   gap: 5px;
   position: relative;
+
+  &-fav {
+    display: flex;
+    justify-content: flex-end;
+  }
 }

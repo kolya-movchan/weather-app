@@ -1,0 +1,14 @@
+.fav-no-data {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  font-weight: 400;
+  font-size: 40px;
+  color: #00668a;
+
+  &__img {
+    width: 200px;
+  }
+}

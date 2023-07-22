@@ -37,7 +37,7 @@
   const favoriteMode = ref(false);
 
   const addToFavorite = () => {
-    // console.log('added')
+    console.log('added')
 
     if (localStorage.getItem("savedCities")) {
         if (JSON.parse(localStorage.getItem("savedCities")).length === 5) {
@@ -76,6 +76,10 @@
     savedCities.value.push(locationObj);
 
     localStorage.setItem("savedCities", JSON.stringify(savedCities.value));
+
+    // console.log(localStorage.getItem('savedCities'))
+    // console.log(savedCities.value)
+    // console.log(savedCities.value)
 
     let query = Object.assign({}, route.query);
     delete query.preview;
