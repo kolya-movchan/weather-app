@@ -20,7 +20,7 @@
 
     <div class="fav-no-data" v-else>
       <img
-        src="../assets/pictures/no data.png"
+        src="../assets/pictures/no-data.png"
         alt="no data sad cloud"
         class="fav-no-data__img"
       />
