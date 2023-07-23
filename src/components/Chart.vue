@@ -57,10 +57,5 @@ export default {
       }
     }
   },
-
-  //  created() {
-  //   console.log('PROPS:', this.dataForChart);
-  //   // console.log('PROPS TTTTTTTTTT:', Array.from(new Set([...this.dataForChart.datasets[0].data])));
-  // },
 }
 </script>

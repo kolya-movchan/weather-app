@@ -39,7 +39,6 @@
 
   const RemoveFavorites = (cityData) => {
     console.log('LERA', cityData)
-  //  if (JSON.parse(localStorage.getItem("savedCities"))) {
       const restOfCities = JSON
         .parse(
           localStorage.getItem("savedCities"))
@@ -55,7 +54,6 @@
         'The card has been removed from favorites.',
         'success'
       );
-    // }
   };
 
 

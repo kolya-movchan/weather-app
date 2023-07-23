@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LayoutSkeleton from '../components/LayoutSkeleton.vue'
-import CityView from '../views/CityView.vue'
 import FavoritesView from '../views/FavoritesView.vue'; // Import the new component
 
 const router = createRouter({

@@ -28,7 +28,6 @@
           </p>
 
           <template v-else>
-            <!-- <div @click='showAddButton'> -->
               <li
                 v-for="searchResult in mapboxSearchResults"
                 :key="searchResult.id"
@@ -37,7 +36,6 @@
               >
                 {{ searchResult.place_name }}
               </li>
-            <!-- </div> -->
         </template>
         </ul>
      </div>
@@ -141,7 +139,7 @@
     <div
       class="info-window"
       :class="{ 'loading': isLoading }"
-      v-else="dataLoaded"
+      v-else
     >
       <Preloader />
     </div>
@@ -257,7 +255,7 @@
 </template>
 
 <script setup>
-  import { ref, onMounted, watchEffect, onUpdated } from "vue";
+  import { ref, onMounted } from "vue";
   import axios from "axios";
   import { useRouter, useRoute } from "vue-router";
   import Chart from "./Chart.vue";
@@ -281,109 +279,18 @@
   });
   const chartKey = ref(0);
   const weekIsActive = ref(null);
+  const searchQuery = ref("");
+  const queryTimeout = ref(null);
+  const mapboxSearchResults = ref(null);
+  const searchError = ref(null);
+  const checkIfFavorite = ref(null)
 
   const keyForOpenWeather1 = 'f4bff0686f0ff9a57e4f9d2bc578d9e9';
-  // cons keyForOpenWeather2 = 'bba7c617493e8c52abca4d662d29cc44';
+  const apiKeyForIP = '72da4f70eb0348ec9c3c8b2d9cbaef25';
+  const mapboxAPIKey =
+    "pk.eyJ1Ijoia21vY2hhbmMiLCJhIjoiY2xrOGNvNXhwMGh3YjNzcm9jeDI1NWVxZiJ9.0P8k9GkO2fhNI-juyaOkDg";
 
-  const getWeatherData = async (lat, lng) => {
-    try {
-      const weatherData = await axios.get(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude={part}&appid=${keyForOpenWeather1}&units=imperial`);
-
-      // cal current date & time
-      const localOffset = new Date().getTimezoneOffset() * 60000;
-      const utc = weatherData.data.current.dt * 1000 + localOffset;
-      weatherData.data.currentTime =
-        utc + 1000 * weatherData.data.timezone_offset;
-
-      // cal hourly wxeather offset
-      weatherData.data.hourly.forEach((hour) => {
-        const utc = hour.dt * 1000 + localOffset;
-        hour.currentTime =
-          utc + 1000 * weatherData.data.timezone_offset;
-      });
-
-      return weatherData.data;
-    } catch (err) {
-        Swal.fire(
-        'Network Error!',
-        'The server refused to provide data. Please, refresh or try again later',
-        'error'
-      );
-
-      console.log(err);
-    }
-  };
-
-  const updateCityView = (weekMode = false) => {
-    if (dataLoaded.value && !weekMode && !weekIsActive.value) {
-        // console.log(1.1)
-
-      return
-    } else if (dataLoaded.value && weekMode && weekIsActive.value) {
-        // console.log(1.2)
-
-      return
-    }
-    // console.log(2)
-
-    if (!weekMode) {
-      // console.log(3)
-        dataForChart.value = {
-        labels: hourly.value.map(hour =>
-          new Date(
-            hour.currentTime
-          ).toLocaleTimeString("en-us", {
-            hour: "numeric",
-          })),
-          datasets: [{ data: hourly.value.map(item => item.temp) }],
-        }
-
-        weekIsActive.value = false;
-      } else {
-          // console.log(4)
-         dataForChart.value = {
-          labels: daily.value.map((item) => (
-            new Date(item.dt * 1000).toLocaleDateString(
-              "en-us",
-              {
-                weekday: "long",
-              }
-            )
-          )),
-          datasets: [{ data: daily.value.map(item => item.temp.day) }],
-        }
-
-        // console.log(5)
-        weekIsActive.value = true;
-      }
-
-      chartKey.value++;
-  }
-
-  const newCity = ref(true);
-
-  const getCityView = async(lat, lng) => {
-    const weatherData = await getWeatherData(lat, lng);
-
-    // console.log('weatherData', weatherData)
-
-    if (weatherData) {
-      time.value = weatherData.currentTime;
-      current.value = weatherData.current;
-      hourly.value = weatherData.hourly.slice(0, 24);
-      daily.value = weatherData.daily;
-
-      searchQuery.value = "";
-    }
-
-    isLoading.value = false;
-
-
-    updateCityView();
-
-    dataLoaded.value = true;
-  }
+  const props = defineProps(['favMode', 'coordinates', 'id', 'onDelete', 'onRemove']);
 
   const previewCity = (searchResult) => {
     const [city, state] = searchResult.place_name.split(",");
@@ -408,7 +315,89 @@
     }, 300);
   };
 
-  const checkIfFavorite = ref(null)
+  const getWeatherData = async (lat, lng) => {
+    try {
+      const weatherData = await axios.get(
+        `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&exclude={part}&appid=${keyForOpenWeather1}&units=imperial`);
+
+      const localOffset = new Date().getTimezoneOffset() * 60000;
+      const utc = weatherData.data.current.dt * 1000 + localOffset;
+      weatherData.data.currentTime =
+        utc + 1000 * weatherData.data.timezone_offset;
+
+      weatherData.data.hourly.forEach((hour) => {
+        const utc = hour.dt * 1000 + localOffset;
+        hour.currentTime =
+          utc + 1000 * weatherData.data.timezone_offset;
+      });
+
+      return weatherData.data;
+    } catch (err) {
+        Swal.fire(
+        'Network Error!',
+        'The server refused to provide data. Please, refresh or try again later',
+        'error'
+      );
+    }
+  };
+
+  const updateCityView = (weekMode = false) => {
+    if (dataLoaded.value && !weekMode && !weekIsActive.value) {
+      return
+    } else if (dataLoaded.value && weekMode && weekIsActive.value) {
+      return
+    }
+
+    if (!weekMode) {
+        dataForChart.value = {
+        labels: hourly.value.map(hour =>
+          new Date(
+            hour.currentTime
+          ).toLocaleTimeString("en-us", {
+            hour: "numeric",
+          })),
+          datasets: [{ data: hourly.value.map(item => item.temp) }],
+        }
+
+        weekIsActive.value = false;
+      } else {
+         dataForChart.value = {
+          labels: daily.value.map((item) => (
+            new Date(item.dt * 1000).toLocaleDateString(
+              "en-us",
+              {
+                weekday: "long",
+              }
+            )
+          )),
+          datasets: [{ data: daily.value.map(item => item.temp.day) }],
+        }
+
+        weekIsActive.value = true;
+      }
+
+      chartKey.value++;
+  }
+
+  const getCityView = async(lat, lng) => {
+    const weatherData = await getWeatherData(lat, lng);
+
+    if (weatherData) {
+      time.value = weatherData.currentTime;
+      current.value = weatherData.current;
+      hourly.value = weatherData.hourly.slice(0, 24);
+      daily.value = weatherData.daily;
+
+      searchQuery.value = "";
+    }
+
+    isLoading.value = false;
+
+
+    updateCityView();
+
+    dataLoaded.value = true;
+  }
 
   checkIfFavorite.value = () => {
         // console.log('cityname', cityName.value);
@@ -421,14 +410,7 @@
     }
   }
 
-  // console.log('checkIfFavorite', checkIfFavorite.value())
-
-  // console.log('checkIfFavorite', checkIfFavorite.value())
-
-  const apiKeyForIP = '72da4f70eb0348ec9c3c8b2d9cbaef25'
-
   // IP LOGIC TO BE ACTIVATED LATER 
-
   const getCityByIp = async() => {
     try {
       const IpData = await axios.get('https://api.ipify.org?format=json');
@@ -452,8 +434,6 @@
         },
       });
 
-      // console.log(route.query.lat, route.query.lng)
-
       setTimeout(() => {
         getCityView(route.query.lat, route.query.lng);
       }, 300);
@@ -465,13 +445,6 @@
       );
     }
   }
-
-  const mapboxAPIKey =
-    "pk.eyJ1Ijoia21vY2hhbmMiLCJhIjoiY2xrOGNvNXhwMGh3YjNzcm9jeDI1NWVxZiJ9.0P8k9GkO2fhNI-juyaOkDg";
-  const searchQuery = ref("");
-  const queryTimeout = ref(null);
-  const mapboxSearchResults = ref(null);
-  const searchError = ref(null);
 
   const getSearchResults = () => {
     clearTimeout(queryTimeout.value);
@@ -498,17 +471,8 @@
     }, 300);
   };
 
-  const props = defineProps(['favMode', 'coordinates', 'id', 'onDelete', 'onRemove']);
-
-  // const removeFav = () => {
-  //   // Call the onRemove function passed from the parent
-  //   props.onRemove();
-  //   // Emit the onRemove event to notify the parent component
-  //   emit('onRemove');
-  // };
-
   const showFromFav = () => {
-    if (props.favMode) {
+    if (props.coordinates) {
       getCityView(props.coordinates.lat, props.coordinates.lng);
       cityName.value = props.coordinates.city;
     } else {
@@ -518,62 +482,15 @@
 
   onMounted(showFromFav);
 
-  // const removeFav = () => {
-  //   // Emit the onRemove event to notify the parent component
-
-  //   console.log('clicked')
-  //   emit('onRemove', 1);
-  // };
-
-  // const removeFav = () => {
-  //   if (JSON.parse(localStorage.getItem("savedCities"))) {
-  //     const restOfCities = JSON
-  //       .parse(
-  //         localStorage.getItem("savedCities"))
-  //           .filter(city => city.city !== cityName.value);
-
-  //     localStorage.setItem("savedCities", JSON.stringify(restOfCities));
-
-  //     Swal.fire(
-  //       'Deleted!',
-  //       'The card has been removed from favorites.',
-  //       'success'
-  //     );
-  //   }
-
-  //   // isFavorite.value = false;
-  // }
-
 </script>
 
 <script> 
-
   export default {
-    props: {
-      // activateButton: null,
-      k: null,
-      onDelete: null,
-      id: null,
-      favMode: null,
-      coordinates: null,
-      onRemove: null,
-    },
-    methods:{
-      // showAddButton()
-      //   {
-      //     this.$emit('activateButton', true)
-      //   },
+    methods: {
       deleteCard()
-        {
-          this.$emit('onDelete', this.id)
-        },
+        { this.$emit('onDelete', this.id) },
       removeFav(city)
-        {
-          this.$emit('onRemove', city)
-        },
+        { this.$emit('onRemove', city)},
     },
-  created() {
-    // console.log('PROPS:', this.favMode);
-  },
-    };
+  };
 </script>

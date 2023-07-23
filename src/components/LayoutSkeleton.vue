@@ -12,35 +12,28 @@
     </button>
   </div>
 
-  <div
-    class="wrapper"
-    v-for="(componentData) in layoutComponents"
-    :key="componentData.id"
-  >
-    <component
-      :is="componentData.data[0]"
-      :k="true"
-      :id="componentData.id"
-      @onDelete="DeleteCard($event)"
-    />
-  </div>
+    <div
+      class="wrapper"
+      v-for="(componentData) in layoutComponents"
+      :key="componentData.id"
+    >
+      <component
+        :is="componentData.data[0]"
+        :k="true"
+        :id="componentData.id"
+        @onDelete="DeleteCard($event)"
+      />
+    </div>
 </template>
 
 <script setup>
-  import { RouterView } from "vue-router";
-
   import { ref } from 'vue';
   import Layout from "./Layout.vue";
   import Swal from 'sweetalert2';
   import { v4 as uuidv4 } from 'uuid';
 
   const visibleAdd = ref(false);
-  const layoutComponents = ref([{ data: [ Layout ], id: uuidv4() }]);
-
-  // const ShowButtonAdd = () => {
-  //   visibleAdd.value = true;
-  // };
-
+  const layoutComponents = ref( [{ data: [ Layout ], id: uuidv4() }]);
 
   const DeleteCard = (id) => {
     console.log('id', id)
@@ -100,7 +93,7 @@
 <script>
   export default {
     components: {
-      Layout,
+      Layout
     },
   };
 </script>

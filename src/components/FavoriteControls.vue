@@ -25,9 +25,9 @@
 </template>
 
 <script setup>
-  import { RouterLink, useRoute, useRouter } from "vue-router";
+  import { useRoute, useRouter } from "vue-router";
   import Swal from 'sweetalert2';
-  import { ref, onUpdated } from "vue";
+  import { ref } from "vue";
   import { v4 as uuidv4 } from 'uuid';
 
   const route = useRoute();
@@ -77,10 +77,6 @@
 
     localStorage.setItem("savedCities", JSON.stringify(savedCities.value));
 
-    // console.log(localStorage.getItem('savedCities'))
-    // console.log(savedCities.value)
-    // console.log(savedCities.value)
-
     let query = Object.assign({}, route.query);
     delete query.preview;
     query.id = locationObj.id;
@@ -92,7 +88,6 @@
       text: 'Added to Favorites',
     });
   }
-
 </script>
 
 <script>
