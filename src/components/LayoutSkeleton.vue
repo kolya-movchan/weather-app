@@ -36,8 +36,6 @@
   const layoutComponents = ref( [{ data: [ Layout ], id: uuidv4() }]);
 
   const DeleteCard = (id) => {
-    console.log('id', id)
-
     if (layoutComponents.value.length === 1) {
       Swal.fire(
           'Failure!',

@@ -400,8 +400,6 @@
   }
 
   checkIfFavorite.value = () => {
-        // console.log('cityname', cityName.value);
-        // console.log('saved', JSON.parse(localStorage.getItem("savedCities")));
 
     if (JSON.parse(localStorage.getItem("savedCities"))) {
         return JSON.parse(localStorage.getItem("savedCities")).some(city => city.city === cityName.value)
@@ -416,8 +414,6 @@
       const IpData = await axios.get('https://api.ipify.org?format=json');
 
       const locationData = await axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKeyForIP}&ip=${IpData.data.ip}`);
-
-      console.log(locationData);
 
       const city = locationData.data.city;
       const state = locationData.data.country_name;

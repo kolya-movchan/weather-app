@@ -37,12 +37,8 @@
   const favoriteMode = ref(false);
 
   const addToFavorite = () => {
-    console.log('added')
-
     if (localStorage.getItem("savedCities")) {
         if (JSON.parse(localStorage.getItem("savedCities")).length === 5) {
-          console.log('limit');
-
           Swal.fire(
             'Failure!',
             'Maximum number of saved cards are 5. Please, delete some to save new cards',

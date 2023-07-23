@@ -38,7 +38,6 @@
   const favCities = ref([]);
 
   const RemoveFavorites = (cityData) => {
-    console.log('LERA', cityData)
       const restOfCities = JSON
         .parse(
           localStorage.getItem("savedCities"))
@@ -46,8 +45,6 @@
 
       localStorage.setItem("savedCities", JSON.stringify(restOfCities));
       favCities.value = restOfCities;
-
-      console.log(2)
 
       Swal.fire(
         'Deleted!',
