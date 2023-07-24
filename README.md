@@ -1,6 +1,8 @@
 # Introduction
 The Weather Project on Vue is a web application that provides real-time weather information for various cities. The project follows an API-oriented approach, integrating multiple APIs to fetch data related to IP geolocation, weather forecasts, and city information. By combining these APIs, the application offers users an intuitive and interactive weather dashboard.
 
+[DEMO](https://kolya-movchan.github.io/weather-app/)
+
 ## API-Oriented Approach
 The Weather Project leverages the following APIs to provide accurate and up-to-date weather data:
 
