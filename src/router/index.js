@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LayoutSkeleton from '../components/LayoutSkeleton.vue'
-import FavoritesView from '../views/FavoritesView.vue'; // Import the new component
+import FavouritesView from '../views/FavouritesView.vue' // Import the new component
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,10 +16,10 @@ const router = createRouter({
       component: LayoutSkeleton
     },
     {
-      path: '/favorites',
-      name: 'favorites',
-      component: FavoritesView,
-    },
+      path: '/Favourites',
+      name: 'Favourites',
+      component: FavouritesView
+    }
   ]
 })
 

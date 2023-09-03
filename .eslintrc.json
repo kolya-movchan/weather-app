@@ -15,5 +15,7 @@
         "vue"
     ],
     "rules": {
+        "vue/html-indent": ["error", 2], // Enforce 2 spaces for HTML indentation
+        "indent": ["error", 2] // Enforce 2 spaces for JavaScript indentation
     }
 }
